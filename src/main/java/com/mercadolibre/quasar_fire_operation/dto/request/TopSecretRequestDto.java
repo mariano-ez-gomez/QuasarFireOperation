@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 public class TopSecretRequestDto {
 
-    private ArrayList<SatteliteDto> satellites;
+    private ArrayList<SatelliteInfoDto> satellites;
 
-    public ArrayList<SatteliteDto> getSatellites() {
+    public ArrayList<SatelliteInfoDto> getSatellites() {
         return satellites;
     }
 
-    public void setSatellites(ArrayList<SatteliteDto> satellites) {
+    public void setSatellites(ArrayList<SatelliteInfoDto> satellites) {
         this.satellites = satellites;
     }
 }

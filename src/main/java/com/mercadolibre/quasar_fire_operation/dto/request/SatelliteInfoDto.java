@@ -1,6 +1,6 @@
 package com.mercadolibre.quasar_fire_operation.dto.request;
 
-public class SatteliteDto {
+public class SatelliteInfoDto {
 
     private String name;
     private float distance;
