@@ -21,7 +21,8 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
         String decodedMessage = "";
 
         this.validateMessages(messages);
-        int minLength = getMinimumMessageLength(messages);
+        int minLength = this.getMinimumMessageLength(messages);
+        this.validateMessagesLength(messages, minLength);
 
         String[] msg0 = messages.get(0);
         String[] msg1 = messages.get(1);
@@ -32,31 +33,40 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
         return decodedMessage;
     }
 
+
+
     private String decodeMessage(String decodedMessage, int minLength, String[] message0, String[] message1, String[] message2) throws SatelliteException {
         ArrayList<String> words = new ArrayList<>();
         for(int i = 0; i < minLength; i++) {
+
             words.add(message0[message0.length > minLength ? i+1 : i]);
             words.add(message1[message1.length > minLength ? i+1 : i]);
             words.add(message2[message2.length > minLength ? i+1 : i]);
 
-            if(this.areAllDifferentWordsOrBlankSpaces(words)) {
-                //all the words are different or are blank spaces
+            if(this.areAllDifferentWordsOrBlankSpaces(words, i)) {
+                //all the words are different or are blank spaces (except for the first one)
                 throw new SatelliteException(MESSAGES_EXCEPTION);
             } else {
-                decodedMessage = this.appendWord(decodedMessage, this.findWord(words));
+                decodedMessage = this.appendWord(decodedMessage, this.findWord(words, i));
             }
             words = new ArrayList<>();
         }
         return decodedMessage.trim();
     }
 
-    private boolean areAllDifferentWordsOrBlankSpaces(ArrayList<String> words) {
-        return filterBlankSpaces(words).distinct().count() > 1 ;
+    private boolean areAllDifferentWordsOrBlankSpaces(ArrayList<String> words, int i) {
+        long distinctCounter = this.filterBlankSpaces(words).distinct().count();
+        return (distinctCounter == 0 && i > 0) || distinctCounter > 1 ;
     }
 
-    private String findWord(ArrayList<String> words) {
-        //returns the first word that is not a blank space
-        return filterBlankSpaces(words).findFirst().orElse(null);
+    private String findWord(ArrayList<String> words, int i) {
+        //returns the first word that is not a blank space (except for the first one)
+        String word = this.filterBlankSpaces(words).findFirst().orElse(null);
+        if(Objects.isNull(word) && i==0){
+            return BLANK_SPACE;
+        } else {
+           return word;
+        }
     }
 
     private Stream<String> filterBlankSpaces(ArrayList<String> words) {
@@ -76,6 +86,12 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
     private void validateMessages(ArrayList<String[]> messages) throws SatelliteException {
         if(messages.stream().anyMatch(mes -> Objects.isNull(mes) || mes.length == 0)) {
             //at least one message is empty
+            throw new SatelliteException(MESSAGES_EXCEPTION);
+        }
+    }
+
+    private void validateMessagesLength(ArrayList<String[]> messages, int minLength) throws SatelliteException {
+        if(!messages.stream().allMatch(msg -> msg.length == minLength || msg.length == minLength+1)) {
             throw new SatelliteException(MESSAGES_EXCEPTION);
         }
     }

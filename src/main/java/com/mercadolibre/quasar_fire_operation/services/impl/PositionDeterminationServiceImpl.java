@@ -5,7 +5,6 @@ import com.mercadolibre.quasar_fire_operation.domain.SatelliteCircle;
 import com.mercadolibre.quasar_fire_operation.dto.response.PositionDto;
 import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
 import com.mercadolibre.quasar_fire_operation.services.PositionDeterminationService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,21 +18,13 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
     private static final String SHIP_ON_SAME_POSITION = "The enemy ship cannot be on the same position as an ally satellite";
     private static final String NO_INTERSECTION = "Circumferences of satellites communication do not intersect";
 
-    @Value("${satellite0.position}")
-    private ArrayList<Float> satellite0Position;
-    @Value("${satellite1.position}")
-    private ArrayList<Float> satellite1Position;
-    @Value("${satellite2.position}")
-    private ArrayList<Float> satellite2Position;
-
     @Override
-    public PositionDto getLocation(ArrayList<Float> distances) throws SatelliteException {
+    public PositionDto getLocation(ArrayList<Center> centers, ArrayList<Float> distances) throws SatelliteException {
 
         this.validateDistances(distances);
-
-        SatelliteCircle satelliteCircle0 = new SatelliteCircle(new Center(satellite0Position.get(0), satellite0Position.get(1)), distances.get(0));
-        SatelliteCircle satelliteCircle1 = new SatelliteCircle(new Center(satellite1Position.get(0), satellite1Position.get(1)), distances.get(1));
-        SatelliteCircle satelliteCircle2 = new SatelliteCircle(new Center(satellite2Position.get(0), satellite2Position.get(1)), distances.get(2));
+        SatelliteCircle satelliteCircle0 = new SatelliteCircle(centers.get(0), distances.get(0));
+        SatelliteCircle satelliteCircle1 = new SatelliteCircle(centers.get(1), distances.get(1));
+        SatelliteCircle satelliteCircle2 = new SatelliteCircle(centers.get(2), distances.get(2));
 
         return this.calculateThreeCircleIntersection(satelliteCircle0, satelliteCircle1, satelliteCircle2);
 
