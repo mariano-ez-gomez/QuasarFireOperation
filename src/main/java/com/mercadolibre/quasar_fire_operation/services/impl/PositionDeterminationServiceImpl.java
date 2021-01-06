@@ -27,11 +27,9 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
     private ArrayList<Float> satellite2Position;
 
     @Override
-    public PositionDto determinePosition(ArrayList<Float> distances) throws SatelliteException {
+    public PositionDto getLocation(ArrayList<Float> distances) throws SatelliteException {
 
-        if(!distances.stream().allMatch(dis -> dis > MINIMUM_DISTANCE)){
-            throw new SatelliteException(SHIP_ON_SAME_POSITION);
-        }
+        this.validateDistances(distances);
 
         SatelliteCircle satelliteCircle0 = new SatelliteCircle(new Center(satellite0Position.get(0), satellite0Position.get(1)), distances.get(0));
         SatelliteCircle satelliteCircle1 = new SatelliteCircle(new Center(satellite1Position.get(0), satellite1Position.get(1)), distances.get(1));
@@ -39,6 +37,12 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
 
         return this.calculateThreeCircleIntersection(satelliteCircle0, satelliteCircle1, satelliteCircle2);
 
+    }
+
+    private void validateDistances(ArrayList<Float> distances) throws SatelliteException {
+        if(!distances.stream().allMatch(dis -> dis > MINIMUM_DISTANCE)){
+            throw new SatelliteException(SHIP_ON_SAME_POSITION);
+        }
     }
 
 

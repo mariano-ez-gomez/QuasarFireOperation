@@ -37,8 +37,8 @@ public class QuasarFireOperationServiceImpl implements QuasarFireOperationServic
 
         this.getDistancesAndFragmentedMessages(topSecretRequestDto, distances, fragmentedMessages);
 
-        PositionDto positionDto = this.positionDeterminationService.determinePosition(distances);
-        String message = this.messageDeterminationService.determineMessage(fragmentedMessages);
+        PositionDto positionDto = this.positionDeterminationService.getLocation(distances);
+        String message = this.messageDeterminationService.getMessage(fragmentedMessages);
         return buildResponse(positionDto, message);
     }
 

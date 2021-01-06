@@ -7,5 +7,5 @@ import java.util.ArrayList;
 
 public interface PositionDeterminationService {
 
-    public PositionDto determinePosition(ArrayList<Float> distances) throws SatelliteException;
+    public PositionDto getLocation(ArrayList<Float> distances) throws SatelliteException;
 }
