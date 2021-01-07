@@ -1,6 +1,6 @@
 runtime: java8
 env: flex
-version: v1
+
 handlers:
   - url: /.*
     script: this field is required, but ignored
