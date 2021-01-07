@@ -9,18 +9,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class SatelliteInformationServiceImpl implements SatelliteInformationService {
 
     private static final int NUMBER_OF_SATELLITES = 3;
-    private static final String SATELLITE_NAME_ERROR = "Satellite name error";
-    private static final String SATELLITE_VALIDATION_ERROR = "Error in satellites info";
+    private static final String SATELLITE_NAME_ERROR = "SATELLITE_NAME_ERROR";
+    private static final String SATELLITE_VALIDATION_ERROR = "SATELLITE_VALIDATION_ERROR";
     private Map<String, Center> positionsCentersMap;
+
+    ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
 
     @Value("${satellite0.name}")
     private String sat0Name;
@@ -53,7 +52,7 @@ public class SatelliteInformationServiceImpl implements SatelliteInformationServ
     @Override
     public void validateSatellitesNames(ArrayList<String> names) throws SatelliteException {
         if(names.stream().anyMatch(name -> Objects.isNull(this.positionsCentersMap.get(name)))) {
-            throw new SatelliteException(SATELLITE_NAME_ERROR);
+            throw new SatelliteException(this.errorMessages.getString(SATELLITE_NAME_ERROR));
         }
     }
 
@@ -68,7 +67,7 @@ public class SatelliteInformationServiceImpl implements SatelliteInformationServ
                 Objects.isNull(topSecretRequestDto.getSatellites()) ||
                 topSecretRequestDto.getSatellites().size() != NUMBER_OF_SATELLITES ||
                 this.validateSatellitesInfo(topSecretRequestDto.getSatellites())){
-            throw new SatelliteException(SATELLITE_VALIDATION_ERROR);
+            throw new SatelliteException(this.errorMessages.getString(SATELLITE_VALIDATION_ERROR));
         }
     }
 

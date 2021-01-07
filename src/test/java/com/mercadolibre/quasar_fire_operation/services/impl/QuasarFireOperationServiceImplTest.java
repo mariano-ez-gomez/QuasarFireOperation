@@ -8,21 +8,14 @@ import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
 import com.mercadolibre.quasar_fire_operation.services.MessageDeterminationService;
 import com.mercadolibre.quasar_fire_operation.services.PositionDeterminationService;
 import com.mercadolibre.quasar_fire_operation.services.SatelliteInformationService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.*;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
 
-@RunWith(MockitoJUnitRunner.class)
+
 public class QuasarFireOperationServiceImplTest {
 
     private static final String KENOBI = "kenobi";
@@ -45,8 +38,9 @@ public class QuasarFireOperationServiceImplTest {
     private QuasarFireOperationServiceImpl quasarFireOperationService;
 
 
-    @Before
+    @BeforeEach
     public void init() {
+        MockitoAnnotations.initMocks(this);
         topSecretRequestDto = new TopSecretRequestDto();
         SatelliteInfoDto satelliteInfoDto0 = new SatelliteInfoDto();
         SatelliteInfoDto satelliteInfoDto1= new SatelliteInfoDto();

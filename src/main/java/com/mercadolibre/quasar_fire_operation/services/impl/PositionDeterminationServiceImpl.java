@@ -8,6 +8,9 @@ import com.mercadolibre.quasar_fire_operation.services.PositionDeterminationServ
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class PositionDeterminationServiceImpl implements PositionDeterminationService {
@@ -15,8 +18,11 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
     private static final float EPSILON = 0.01F;
     private static final float MINIMUM_DISTANCE = 0F;
 
-    private static final String SHIP_ON_SAME_POSITION = "The enemy ship cannot be on the same position as an ally satellite";
-    private static final String NO_INTERSECTION = "Circumferences of satellites communication do not intersect";
+    private static final String SHIP_ON_SAME_POSITION = "SHIP_ON_SAME_POSITION";
+    private static final String NO_INTERSECTION = "NO_INTERSECTION";
+
+    ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
+    final Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Override
     public PositionDto getLocation(ArrayList<Center> centers, ArrayList<Float> distances) throws SatelliteException {
@@ -32,7 +38,7 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
 
     private void validateDistances(ArrayList<Float> distances) throws SatelliteException {
         if(!distances.stream().allMatch(dis -> dis > MINIMUM_DISTANCE)){
-            throw new SatelliteException(SHIP_ON_SAME_POSITION);
+            throw new SatelliteException(this.errorMessages.getString(SHIP_ON_SAME_POSITION));
         }
     }
 
@@ -54,15 +60,13 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
         d = (float) Math.sqrt((dy*dy) + (dx*dx));
 
         /* Check for solvability. */
-        if (d > (r0 + r1))
-        {
+        if (d > (r0 + r1)) {
             /* no solution. circles do not intersect. */
-            throw new SatelliteException(NO_INTERSECTION);
+            throw new SatelliteException(this.errorMessages.getString(NO_INTERSECTION));
         }
-        if (d < Math.abs(r0 - r1))
-        {
+        if (d < Math.abs(r0 - r1)) {
             /* no solution. one circle is contained in the other */
-            throw new SatelliteException(NO_INTERSECTION);
+            throw new SatelliteException(this.errorMessages.getString(NO_INTERSECTION));
         }
 
         /* 'point 2' is the point where the line through the circle
@@ -94,7 +98,7 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
         float intersectionPoint1_y = point2_y + ry;
         float intersectionPoint2_y = point2_y - ry;
 
-        System.out.println("INTERSECTION Circle1 AND Circle2:" + "(" + intersectionPoint1_x + "," + intersectionPoint1_y + ")" + " AND (" + intersectionPoint2_x + "," + intersectionPoint2_y + ")");
+        this.logger.log(Level.INFO, "INTERSECTION Circle1 AND Circle2:" + "(" + intersectionPoint1_x + "," + intersectionPoint1_y + ")" + " AND (" + intersectionPoint2_x + "," + intersectionPoint2_y + ")");
 
         /* Lets determine if circle 3 intersects at either of the above intersection points. */
         dx = intersectionPoint1_x - sat2.getCenter().getX();
@@ -106,16 +110,16 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
         float d2 = (float) Math.sqrt((dy*dy) + (dx*dx));
 
         if(Math.abs(d1 - r2) < EPSILON) {
-            System.out.println("INTERSECTION Circle1 AND Circle2 AND Circle3:" + "(" + intersectionPoint1_x + "," + intersectionPoint1_y + ")");
+            this.logger.log(Level.INFO,"INTERSECTION Circle1 AND Circle2 AND Circle3:" + "(" + intersectionPoint1_x + "," + intersectionPoint1_y + ")");
             return new PositionDto(intersectionPoint1_x, intersectionPoint1_y);
         }
         else if(Math.abs(d2 - r2) < EPSILON) {
-            System.out.println("INTERSECTION Circle1 AND Circle2 AND Circle3:" + "(" + intersectionPoint2_x + "," + intersectionPoint2_y + ")"); //here was an error
+            this.logger.log(Level.INFO,"INTERSECTION Circle1 AND Circle2 AND Circle3:" + "(" + intersectionPoint2_x + "," + intersectionPoint2_y + ")");
             return new PositionDto(intersectionPoint2_x, intersectionPoint2_y);
         }
         else {
-            System.out.println("INTERSECTION Circle1 AND Circle2 AND Circle3:" + "NONE");
-            throw new SatelliteException(NO_INTERSECTION);
+            this.logger.log(Level.INFO,"INTERSECTION Circle1 AND Circle2 AND Circle3:" + "NONE");
+            throw new SatelliteException(this.errorMessages.getString(NO_INTERSECTION));
         }
     }
 }

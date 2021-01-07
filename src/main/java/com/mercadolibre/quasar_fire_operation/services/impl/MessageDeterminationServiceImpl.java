@@ -6,15 +6,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 @Service
 public class MessageDeterminationServiceImpl implements MessageDeterminationService {
 
-    private static final String MESSAGES_EXCEPTION = "Cannot determine message";
+    private static final String MESSAGES_EXCEPTION = "MESSAGES_EXCEPTION";
     private static final int NUMBER_OF_SATELLITES = 3;
-    public static final String BLANK_SPACE = " ";
-    public static final String EMPTY_STRING = "";
+    private static final String BLANK_SPACE = " ";
+    private static final String EMPTY_STRING = "";
+
+    ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
 
     @Override
     public String getMessage(ArrayList<String[]> messages) throws SatelliteException {
@@ -33,8 +37,6 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
         return decodedMessage;
     }
 
-
-
     private String decodeMessage(String decodedMessage, int minLength, String[] message0, String[] message1, String[] message2) throws SatelliteException {
         ArrayList<String> words = new ArrayList<>();
         for(int i = 0; i < minLength; i++) {
@@ -45,7 +47,7 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
 
             if(this.areAllDifferentWordsOrBlankSpaces(words, i)) {
                 //all the words are different or are blank spaces (except for the first one)
-                throw new SatelliteException(MESSAGES_EXCEPTION);
+                throw new SatelliteException(this.errorMessages.getString(MESSAGES_EXCEPTION));
             } else {
                 decodedMessage = this.appendWord(decodedMessage, this.findWord(words, i));
             }
@@ -86,13 +88,13 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
     private void validateMessages(ArrayList<String[]> messages) throws SatelliteException {
         if(messages.stream().anyMatch(mes -> Objects.isNull(mes) || mes.length == 0)) {
             //at least one message is empty
-            throw new SatelliteException(MESSAGES_EXCEPTION);
+            throw new SatelliteException(this.errorMessages.getString(MESSAGES_EXCEPTION));
         }
     }
 
     private void validateMessagesLength(ArrayList<String[]> messages, int minLength) throws SatelliteException {
         if(!messages.stream().allMatch(msg -> msg.length == minLength || msg.length == minLength+1)) {
-            throw new SatelliteException(MESSAGES_EXCEPTION);
+            throw new SatelliteException(this.errorMessages.getString(MESSAGES_EXCEPTION));
         }
     }
 
@@ -100,7 +102,7 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
         if(Objects.nonNull(word)) {
             return decodedMessage.concat(word + BLANK_SPACE);
         } else {
-            throw new SatelliteException(MESSAGES_EXCEPTION);
+            throw new SatelliteException(this.errorMessages.getString(MESSAGES_EXCEPTION));
         }
     }
 

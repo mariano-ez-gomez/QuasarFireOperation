@@ -1,19 +1,16 @@
 package com.mercadolibre.quasar_fire_operation.services.impl;
 
-
 import com.mercadolibre.quasar_fire_operation.domain.Center;
 import com.mercadolibre.quasar_fire_operation.dto.request.SatelliteInfoDto;
 import com.mercadolibre.quasar_fire_operation.dto.request.TopSecretRequestDto;
 import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.util.ArrayList;
 import java.util.Map;
 
-@RunWith(MockitoJUnitRunner.class)
 public class SatelliteInformationServiceImplTest {
 
     public static final String KENOBI = "kenobi";
@@ -25,12 +22,17 @@ public class SatelliteInformationServiceImplTest {
     @Spy
     private SatelliteInformationServiceImpl satelliteInformationService;
 
+    @BeforeEach
+    public void init() {
+        MockitoAnnotations.initMocks(this);
+    }
 
-    @Test(expected = SatelliteException.class)
-    public void validateSatellitesNames_notFound() throws SatelliteException {
+
+    @Test
+    public void validateSatellitesNames_notFound() {
         ArrayList<String> names = new ArrayList<>();
         names.add(KENOBI);
-        this.satelliteInformationService.validateSatellitesNames(names);
+        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellitesNames(names));
     }
 
     @Test
@@ -38,7 +40,7 @@ public class SatelliteInformationServiceImplTest {
         ArrayList<String> names = new ArrayList<>();
         names.add(KENOBI);
         Mockito.when(this.positionsCentersMap.get(Mockito.anyString())).thenReturn(new Center(0F, 0F));
-        this.satelliteInformationService.validateSatellitesNames(names);
+        Assertions.assertDoesNotThrow(() -> this.satelliteInformationService.validateSatellitesNames(names));
     }
 
     @Test
@@ -47,29 +49,29 @@ public class SatelliteInformationServiceImplTest {
         this.satelliteInformationService.getSatellitePositionByName(KENOBI);
     }
 
-    @Test(expected = SatelliteException.class)
-    public void validateSatellites_noReference() throws SatelliteException {
-        this.satelliteInformationService.validateSatellites(null);
+    @Test
+    public void validateSatellites_noReference() {
+        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellites(null));
     }
 
-    @Test(expected = SatelliteException.class)
+    @Test
     public void validateSatellites_noSatellites() throws SatelliteException {
         TopSecretRequestDto topSecretRequestDto = new TopSecretRequestDto();
-        this.satelliteInformationService.validateSatellites(topSecretRequestDto);
+        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
     }
 
-    @Test(expected = SatelliteException.class)
-    public void validateSatellites_noThreeSatellites() throws SatelliteException {
+    @Test
+    public void validateSatellites_noThreeSatellites() {
         TopSecretRequestDto topSecretRequestDto = new TopSecretRequestDto();
         SatelliteInfoDto satelliteInfoDto = new SatelliteInfoDto();
         ArrayList<SatelliteInfoDto> satellites = new ArrayList<>();
         satellites.add(satelliteInfoDto);
         topSecretRequestDto.setSatellites(satellites);
-        this.satelliteInformationService.validateSatellites(topSecretRequestDto);
+        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
     }
 
-    @Test(expected = SatelliteException.class)
-    public void validateSatellites_noValidInformation() throws SatelliteException {
+    @Test
+    public void validateSatellites_noValidInformation() {
         TopSecretRequestDto topSecretRequestDto = new TopSecretRequestDto();
         SatelliteInfoDto satelliteInfoDto = new SatelliteInfoDto();
         ArrayList<SatelliteInfoDto> satellites = new ArrayList<>();
@@ -77,7 +79,7 @@ public class SatelliteInformationServiceImplTest {
         satellites.add(satelliteInfoDto);
         satellites.add(satelliteInfoDto);
         topSecretRequestDto.setSatellites(satellites);
-        this.satelliteInformationService.validateSatellites(topSecretRequestDto);
+        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
     }
 
     @Test
@@ -92,6 +94,6 @@ public class SatelliteInformationServiceImplTest {
         satellites.add(satelliteInfoDto);
         satellites.add(satelliteInfoDto);
         topSecretRequestDto.setSatellites(satellites);
-        this.satelliteInformationService.validateSatellites(topSecretRequestDto);
+        Assertions.assertDoesNotThrow(() -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
     }
 }

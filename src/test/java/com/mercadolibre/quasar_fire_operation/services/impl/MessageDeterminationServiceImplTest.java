@@ -1,17 +1,13 @@
 package com.mercadolibre.quasar_fire_operation.services.impl;
 
 import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-
 import java.util.ArrayList;
 
-@RunWith(MockitoJUnitRunner.class)
 public class MessageDeterminationServiceImplTest {
 
     private static final String DECODED_MESSAGE = "este es un mensaje secreto";
@@ -22,14 +18,13 @@ public class MessageDeterminationServiceImplTest {
     private ArrayList<String[]> messages_correct = new ArrayList<>();
     private ArrayList<String[]> messages_correct_initial_interference = new ArrayList<>();
 
-    @InjectMocks
     @Spy
     private MessageDeterminationServiceImpl messageDeterminationService;
 
-    @Before
+    @BeforeEach
     public void init() {
+        MockitoAnnotations.initMocks(this);
         String[] message_empty = {};
-        messages_empty_or_null.add(null);
         messages_empty_or_null.add(message_empty);
         messages_empty_or_null.add(null);
 
@@ -50,30 +45,30 @@ public class MessageDeterminationServiceImplTest {
         messages_correct_initial_interference.add(new String[] {"", "", "", "un", "", ""});
     }
 
-    @Test(expected = SatelliteException.class)
-    public void getMessage_empty_or_null_messages() throws SatelliteException {
-        this.messageDeterminationService.getMessage(messages_empty_or_null);
+    @Test
+    public void getMessage_empty_or_null_messages() {
+        Assertions.assertThrows(SatelliteException.class, () -> this.messageDeterminationService.getMessage(messages_empty_or_null));
     }
 
-    @Test(expected = SatelliteException.class)
-    public void getMessage_incorrect_lengths() throws SatelliteException {
-        this.messageDeterminationService.getMessage(messages_incorrect_lengths);
+    @Test
+    public void getMessage_incorrect_lengths() {
+        Assertions.assertThrows(SatelliteException.class, () -> this.messageDeterminationService.getMessage(messages_incorrect_lengths));
     }
 
-    @Test(expected = SatelliteException.class)
-    public void getMessage_incorrect_blank_word() throws SatelliteException {
-        this.messageDeterminationService.getMessage(messages_incorrect_blank_word);
+    @Test
+    public void getMessage_incorrect_blank_word() {
+        Assertions.assertThrows(SatelliteException.class, () -> this.messageDeterminationService.getMessage(messages_incorrect_blank_word));
     }
 
     @Test
     public void getMessage_correct() throws SatelliteException {
         String decodedMessage = this.messageDeterminationService.getMessage(messages_correct);
-        Assert.assertEquals(DECODED_MESSAGE, decodedMessage);
+        Assertions.assertEquals(DECODED_MESSAGE, decodedMessage);
     }
 
     @Test
     public void getMessage_correct_with_initial_interference() throws SatelliteException {
         String decodedMessage = this.messageDeterminationService.getMessage(messages_correct_initial_interference);
-        Assert.assertEquals(DECODED_MESSAGE, decodedMessage);
+        Assertions.assertEquals(DECODED_MESSAGE, decodedMessage);
     }
 }
