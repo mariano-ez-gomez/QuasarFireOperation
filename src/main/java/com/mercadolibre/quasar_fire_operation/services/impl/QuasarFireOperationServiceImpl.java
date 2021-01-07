@@ -11,10 +11,8 @@ import com.mercadolibre.quasar_fire_operation.services.QuasarFireOperationServic
 import com.mercadolibre.quasar_fire_operation.services.SatelliteInformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Objects;
+
 
 @Service
 public class QuasarFireOperationServiceImpl implements QuasarFireOperationService {
