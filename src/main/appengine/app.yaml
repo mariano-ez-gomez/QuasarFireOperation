@@ -1,4 +1,5 @@
-runtime: java11
+runtime: java
+env: flex
 version: v1
 handlers:
   - url: /.*
