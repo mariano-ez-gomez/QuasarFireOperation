@@ -3,7 +3,7 @@ package com.mercadolibre.quasar_fire_operation.services.impl;
 import com.mercadolibre.quasar_fire_operation.domain.Center;
 import com.mercadolibre.quasar_fire_operation.dto.request.SatelliteInfoDto;
 import com.mercadolibre.quasar_fire_operation.dto.request.TopSecretRequestDto;
-import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
+import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,11 +32,11 @@ public class SatelliteInformationServiceImplTest {
     public void validateSatellitesNames_notFound() {
         ArrayList<String> names = new ArrayList<>();
         names.add(KENOBI);
-        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellitesNames(names));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.satelliteInformationService.validateSatellitesNames(names));
     }
 
     @Test
-    public void validateSatellitesNames_found() throws SatelliteException {
+    public void validateSatellitesNames_found() throws QuasarFireOperationException {
         ArrayList<String> names = new ArrayList<>();
         names.add(KENOBI);
         Mockito.when(this.positionsCentersMap.get(Mockito.anyString())).thenReturn(new Center(0F, 0F));
@@ -51,13 +51,13 @@ public class SatelliteInformationServiceImplTest {
 
     @Test
     public void validateSatellites_noReference() {
-        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellites(null));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.satelliteInformationService.validateSatellites(null));
     }
 
     @Test
-    public void validateSatellites_noSatellites() throws SatelliteException {
+    public void validateSatellites_noSatellites() throws QuasarFireOperationException {
         TopSecretRequestDto topSecretRequestDto = new TopSecretRequestDto();
-        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class SatelliteInformationServiceImplTest {
         ArrayList<SatelliteInfoDto> satellites = new ArrayList<>();
         satellites.add(satelliteInfoDto);
         topSecretRequestDto.setSatellites(satellites);
-        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
     }
 
     @Test
@@ -79,11 +79,11 @@ public class SatelliteInformationServiceImplTest {
         satellites.add(satelliteInfoDto);
         satellites.add(satelliteInfoDto);
         topSecretRequestDto.setSatellites(satellites);
-        Assertions.assertThrows(SatelliteException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
     }
 
     @Test
-    public void validateSatellites_validInformation() throws SatelliteException {
+    public void validateSatellites_validInformation() throws QuasarFireOperationException {
         TopSecretRequestDto topSecretRequestDto = new TopSecretRequestDto();
         SatelliteInfoDto satelliteInfoDto = new SatelliteInfoDto();
         satelliteInfoDto.setDistance(0F);

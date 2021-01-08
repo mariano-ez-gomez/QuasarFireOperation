@@ -4,7 +4,7 @@ import com.mercadolibre.quasar_fire_operation.domain.Center;
 import com.mercadolibre.quasar_fire_operation.dto.request.SatelliteInfoDto;
 import com.mercadolibre.quasar_fire_operation.dto.request.TopSecretRequestDto;
 import com.mercadolibre.quasar_fire_operation.dto.response.PositionDto;
-import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
+import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import com.mercadolibre.quasar_fire_operation.services.MessageDeterminationService;
 import com.mercadolibre.quasar_fire_operation.services.PositionDeterminationService;
 import com.mercadolibre.quasar_fire_operation.services.SatelliteInformationService;
@@ -67,12 +67,12 @@ public class QuasarFireOperationServiceImplTest {
     }
 
     @Test
-    public void topSecret() throws SatelliteException {
+    public void topSecret() throws QuasarFireOperationException {
         Mockito.doNothing().when(this.satelliteInformationService).validateSatellites(topSecretRequestDto);
         Mockito.doNothing().when(this.satelliteInformationService).validateSatellitesNames(Mockito.any());
         Mockito.when(this.satelliteInformationService.getSatellitePositionByName(Mockito.anyString())).thenReturn(new Center(0F, 0F));
         Mockito.when(this.positionDeterminationService.getLocation(Mockito.any(), Mockito.any())).thenReturn(new PositionDto(0F, 0F));
         Mockito.when(this.messageDeterminationService.getMessage(Mockito.any())).thenReturn("");
-        this.quasarFireOperationService.topSecret(topSecretRequestDto);
+        this.quasarFireOperationService.topSecretDecode(topSecretRequestDto);
     }
 }

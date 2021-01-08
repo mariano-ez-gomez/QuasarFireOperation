@@ -1,22 +1,23 @@
 package com.mercadolibre.quasar_fire_operation.domain;
 
+import com.mercadolibre.quasar_fire_operation.dto.request.SatelliteSplittedInfoDto;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class SplittedMessage {
 
-    private ArrayList<String> list = new ArrayList<>();
+    private Map<String, SatelliteSplittedInfoDto> splittedMessages = new HashMap<>();
 
-    public ArrayList<String> getList() {
-        return list;
+    public Map<String, SatelliteSplittedInfoDto> getSplittedMessages() {
+        return splittedMessages;
     }
 
-    public void setList(ArrayList<String> list) {
-        this.list = list;
+    public void setSplittedMessages(Map<String, SatelliteSplittedInfoDto> splittedMessages) {
+        this.splittedMessages = splittedMessages;
     }
 }

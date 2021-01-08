@@ -4,7 +4,7 @@ import com.mercadolibre.quasar_fire_operation.domain.Center;
 import com.mercadolibre.quasar_fire_operation.dto.request.TopSecretRequestDto;
 import com.mercadolibre.quasar_fire_operation.dto.response.PositionDto;
 import com.mercadolibre.quasar_fire_operation.dto.response.TopSecretResponseDto;
-import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
+import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import com.mercadolibre.quasar_fire_operation.services.MessageDeterminationService;
 import com.mercadolibre.quasar_fire_operation.services.PositionDeterminationService;
 import com.mercadolibre.quasar_fire_operation.services.QuasarFireOperationService;
@@ -27,7 +27,7 @@ public class QuasarFireOperationServiceImpl implements QuasarFireOperationServic
     private SatelliteInformationService satelliteInformationService;
 
     @Override
-    public TopSecretResponseDto topSecret(TopSecretRequestDto topSecretRequestDto) throws SatelliteException {
+    public TopSecretResponseDto topSecretDecode(TopSecretRequestDto topSecretRequestDto) throws QuasarFireOperationException {
 
         ArrayList<String> names = new ArrayList<>();
         ArrayList<Float> distances = new ArrayList<>();

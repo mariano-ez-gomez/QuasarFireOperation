@@ -1,8 +1,9 @@
 package com.mercadolibre.quasar_fire_operation.controllers;
 
+import com.mercadolibre.quasar_fire_operation.dto.request.SatelliteSplittedInfoDto;
 import com.mercadolibre.quasar_fire_operation.dto.request.TopSecretRequestDto;
 import com.mercadolibre.quasar_fire_operation.dto.response.TopSecretResponseDto;
-import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
+import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import com.mercadolibre.quasar_fire_operation.services.QuasarFireOperationService;
 import com.mercadolibre.quasar_fire_operation.services.SplittedMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +23,30 @@ public class QuasarFireOperationController {
     private SplittedMessageService splittedMessageService;
 
     @RequestMapping(value = "/topsecret", method = RequestMethod.POST)
-    private ResponseEntity topSecret(@RequestBody TopSecretRequestDto topSecretRequestDto){
+    private ResponseEntity topSecretDecode(@RequestBody TopSecretRequestDto topSecretRequestDto){
         try {
-            return new ResponseEntity<TopSecretResponseDto>(this.quasarFireOperationService.topSecret(topSecretRequestDto), HttpStatus.OK);
-        } catch (SatelliteException e) {
+            return new ResponseEntity<TopSecretResponseDto>(this.quasarFireOperationService.topSecretDecode(topSecretRequestDto), HttpStatus.OK);
+        } catch (QuasarFireOperationException e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @RequestMapping(value = "/topsecret_split/{satellite_name}", method = RequestMethod.POST)
-    private ResponseEntity topSecretSplitPost(@PathVariable String satellite_name, @RequestBody String satelliteSplittedInfoDto) {
-        this.splittedMessageService.setElement(satelliteSplittedInfoDto);
-        return null;
+    private ResponseEntity topSecretSplitPost(@PathVariable String satellite_name, @RequestBody SatelliteSplittedInfoDto satelliteSplittedInfoDto) {
+        try {
+            this.splittedMessageService.addMessage(satellite_name, satelliteSplittedInfoDto);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (QuasarFireOperationException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @RequestMapping(value = "/topsecret_split", method = RequestMethod.GET)
-    private ResponseEntity topSecretSplitGet(){
-        return new ResponseEntity( this.splittedMessageService.getList(), HttpStatus.OK);
+    private ResponseEntity topSecretSplitDecode(){
+        try {
+            return new ResponseEntity<TopSecretResponseDto>(this.splittedMessageService.topSecretSplitDecode(), HttpStatus.OK);
+        } catch (QuasarFireOperationException e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 }

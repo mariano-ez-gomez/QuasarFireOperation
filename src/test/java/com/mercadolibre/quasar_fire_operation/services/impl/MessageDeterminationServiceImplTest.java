@@ -1,6 +1,6 @@
 package com.mercadolibre.quasar_fire_operation.services.impl;
 
-import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
+import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,27 +47,27 @@ public class MessageDeterminationServiceImplTest {
 
     @Test
     public void getMessage_empty_or_null_messages() {
-        Assertions.assertThrows(SatelliteException.class, () -> this.messageDeterminationService.getMessage(messages_empty_or_null));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.messageDeterminationService.getMessage(messages_empty_or_null));
     }
 
     @Test
     public void getMessage_incorrect_lengths() {
-        Assertions.assertThrows(SatelliteException.class, () -> this.messageDeterminationService.getMessage(messages_incorrect_lengths));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.messageDeterminationService.getMessage(messages_incorrect_lengths));
     }
 
     @Test
     public void getMessage_incorrect_blank_word() {
-        Assertions.assertThrows(SatelliteException.class, () -> this.messageDeterminationService.getMessage(messages_incorrect_blank_word));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.messageDeterminationService.getMessage(messages_incorrect_blank_word));
     }
 
     @Test
-    public void getMessage_correct() throws SatelliteException {
+    public void getMessage_correct() throws QuasarFireOperationException {
         String decodedMessage = this.messageDeterminationService.getMessage(messages_correct);
         Assertions.assertEquals(DECODED_MESSAGE, decodedMessage);
     }
 
     @Test
-    public void getMessage_correct_with_initial_interference() throws SatelliteException {
+    public void getMessage_correct_with_initial_interference() throws QuasarFireOperationException {
         String decodedMessage = this.messageDeterminationService.getMessage(messages_correct_initial_interference);
         Assertions.assertEquals(DECODED_MESSAGE, decodedMessage);
     }

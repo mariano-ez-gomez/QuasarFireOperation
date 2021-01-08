@@ -3,7 +3,7 @@ package com.mercadolibre.quasar_fire_operation.services.impl;
 import com.mercadolibre.quasar_fire_operation.domain.Center;
 import com.mercadolibre.quasar_fire_operation.dto.request.SatelliteInfoDto;
 import com.mercadolibre.quasar_fire_operation.dto.request.TopSecretRequestDto;
-import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
+import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import com.mercadolibre.quasar_fire_operation.services.SatelliteInformationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class SatelliteInformationServiceImpl implements SatelliteInformationServ
     private static final String SATELLITE_VALIDATION_ERROR = "SATELLITE_VALIDATION_ERROR";
     private Map<String, Center> positionsCentersMap;
 
-    ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
+    private ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
 
     @Value("${satellite0.name}")
     private String sat0Name;
@@ -50,9 +50,9 @@ public class SatelliteInformationServiceImpl implements SatelliteInformationServ
     }
 
     @Override
-    public void validateSatellitesNames(ArrayList<String> names) throws SatelliteException {
+    public void validateSatellitesNames(ArrayList<String> names) throws QuasarFireOperationException {
         if(names.stream().anyMatch(name -> Objects.isNull(this.positionsCentersMap.get(name)))) {
-            throw new SatelliteException(this.errorMessages.getString(SATELLITE_NAME_ERROR));
+            throw new QuasarFireOperationException(this.errorMessages.getString(SATELLITE_NAME_ERROR));
         }
     }
 
@@ -62,12 +62,12 @@ public class SatelliteInformationServiceImpl implements SatelliteInformationServ
     }
 
     @Override
-    public void validateSatellites(TopSecretRequestDto topSecretRequestDto) throws SatelliteException {
+    public void validateSatellites(TopSecretRequestDto topSecretRequestDto) throws QuasarFireOperationException {
         if(Objects.isNull(topSecretRequestDto) ||
                 Objects.isNull(topSecretRequestDto.getSatellites()) ||
                 topSecretRequestDto.getSatellites().size() != NUMBER_OF_SATELLITES ||
                 this.validateSatellitesInfo(topSecretRequestDto.getSatellites())){
-            throw new SatelliteException(this.errorMessages.getString(SATELLITE_VALIDATION_ERROR));
+            throw new QuasarFireOperationException(this.errorMessages.getString(SATELLITE_VALIDATION_ERROR));
         }
     }
 

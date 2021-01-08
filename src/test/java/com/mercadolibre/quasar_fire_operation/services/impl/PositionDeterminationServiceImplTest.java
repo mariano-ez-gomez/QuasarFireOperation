@@ -2,7 +2,7 @@ package com.mercadolibre.quasar_fire_operation.services.impl;
 
 import com.mercadolibre.quasar_fire_operation.domain.Center;
 import com.mercadolibre.quasar_fire_operation.dto.response.PositionDto;
-import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
+import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,19 +47,19 @@ public class PositionDeterminationServiceImplTest {
 
     @Test
     public void getLocation_withNoDistance() {
-        Assertions.assertThrows(SatelliteException.class, () -> this.positionDeterminationService.getLocation(centers_no_distance, distances_zero));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.positionDeterminationService.getLocation(centers_no_distance, distances_zero));
     }
 
     @Test
-    public void getLocation_correct_values() throws SatelliteException {
+    public void getLocation_correct_values() throws QuasarFireOperationException {
         PositionDto positionDto = this.positionDeterminationService.getLocation(centers_correct, distances_correct);
         Assertions.assertEquals(-3.3481317F, positionDto.getX(), 0.0001F);
         Assertions.assertEquals(3.3570843F, positionDto.getY(), 0.0001F);
     }
 
     @Test
-    public void getLocation_no_intersection() throws SatelliteException {
+    public void getLocation_no_intersection() throws QuasarFireOperationException {
         distances_correct.add(0, 25F);
-        Assertions.assertThrows(SatelliteException.class, () -> this.positionDeterminationService.getLocation(centers_correct, distances_correct));
+        Assertions.assertThrows(QuasarFireOperationException.class, () -> this.positionDeterminationService.getLocation(centers_correct, distances_correct));
     }
 }

@@ -3,7 +3,7 @@ package com.mercadolibre.quasar_fire_operation.services.impl;
 import com.mercadolibre.quasar_fire_operation.domain.Center;
 import com.mercadolibre.quasar_fire_operation.domain.SatelliteCircle;
 import com.mercadolibre.quasar_fire_operation.dto.response.PositionDto;
-import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
+import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import com.mercadolibre.quasar_fire_operation.services.PositionDeterminationService;
 import org.springframework.stereotype.Service;
 
@@ -21,11 +21,11 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
     private static final String SHIP_ON_SAME_POSITION = "SHIP_ON_SAME_POSITION";
     private static final String NO_INTERSECTION = "NO_INTERSECTION";
 
-    ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
+    private ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
     final Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Override
-    public PositionDto getLocation(ArrayList<Center> centers, ArrayList<Float> distances) throws SatelliteException {
+    public PositionDto getLocation(ArrayList<Center> centers, ArrayList<Float> distances) throws QuasarFireOperationException {
 
         this.validateDistances(distances);
         SatelliteCircle satelliteCircle0 = new SatelliteCircle(centers.get(0), distances.get(0));
@@ -36,14 +36,14 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
 
     }
 
-    private void validateDistances(ArrayList<Float> distances) throws SatelliteException {
+    private void validateDistances(ArrayList<Float> distances) throws QuasarFireOperationException {
         if(!distances.stream().allMatch(dis -> dis > MINIMUM_DISTANCE)){
-            throw new SatelliteException(this.errorMessages.getString(SHIP_ON_SAME_POSITION));
+            throw new QuasarFireOperationException(this.errorMessages.getString(SHIP_ON_SAME_POSITION));
         }
     }
 
 
-    private PositionDto calculateThreeCircleIntersection(SatelliteCircle sat0, SatelliteCircle sat1, SatelliteCircle sat2) throws SatelliteException {
+    private PositionDto calculateThreeCircleIntersection(SatelliteCircle sat0, SatelliteCircle sat1, SatelliteCircle sat2) throws QuasarFireOperationException {
         float a, dx, dy, d, h, rx, ry, r0, r1, r2;
         float point2_x, point2_y;
 
@@ -62,11 +62,11 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
         /* Check for solvability. */
         if (d > (r0 + r1)) {
             /* no solution. circles do not intersect. */
-            throw new SatelliteException(this.errorMessages.getString(NO_INTERSECTION));
+            throw new QuasarFireOperationException(this.errorMessages.getString(NO_INTERSECTION));
         }
         if (d < Math.abs(r0 - r1)) {
             /* no solution. one circle is contained in the other */
-            throw new SatelliteException(this.errorMessages.getString(NO_INTERSECTION));
+            throw new QuasarFireOperationException(this.errorMessages.getString(NO_INTERSECTION));
         }
 
         /* 'point 2' is the point where the line through the circle
@@ -119,7 +119,7 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
         }
         else {
             this.logger.log(Level.INFO,"INTERSECTION Circle1 AND Circle2 AND Circle3:" + "NONE");
-            throw new SatelliteException(this.errorMessages.getString(NO_INTERSECTION));
+            throw new QuasarFireOperationException(this.errorMessages.getString(NO_INTERSECTION));
         }
     }
 }

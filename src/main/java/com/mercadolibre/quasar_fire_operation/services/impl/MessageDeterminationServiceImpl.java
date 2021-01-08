@@ -1,13 +1,12 @@
 package com.mercadolibre.quasar_fire_operation.services.impl;
 
-import com.mercadolibre.quasar_fire_operation.exceptions.SatelliteException;
+import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import com.mercadolibre.quasar_fire_operation.services.MessageDeterminationService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 @Service
@@ -18,10 +17,10 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
     private static final String BLANK_SPACE = " ";
     private static final String EMPTY_STRING = "";
 
-    ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
+    private ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
 
     @Override
-    public String getMessage(ArrayList<String[]> messages) throws SatelliteException {
+    public String getMessage(ArrayList<String[]> messages) throws QuasarFireOperationException {
         String decodedMessage = "";
 
         this.validateMessages(messages);
@@ -37,7 +36,7 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
         return decodedMessage;
     }
 
-    private String decodeMessage(String decodedMessage, int minLength, String[] message0, String[] message1, String[] message2) throws SatelliteException {
+    private String decodeMessage(String decodedMessage, int minLength, String[] message0, String[] message1, String[] message2) throws QuasarFireOperationException {
         ArrayList<String> words = new ArrayList<>();
         for(int i = 0; i < minLength; i++) {
 
@@ -47,7 +46,7 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
 
             if(this.areAllDifferentWordsOrBlankSpaces(words, i)) {
                 //all the words are different or are blank spaces (except for the first one)
-                throw new SatelliteException(this.errorMessages.getString(MESSAGES_EXCEPTION));
+                throw new QuasarFireOperationException(this.errorMessages.getString(MESSAGES_EXCEPTION));
             } else {
                 decodedMessage = this.appendWord(decodedMessage, this.findWord(words, i));
             }
@@ -85,24 +84,24 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
         return minLength;
     }
 
-    private void validateMessages(ArrayList<String[]> messages) throws SatelliteException {
+    private void validateMessages(ArrayList<String[]> messages) throws QuasarFireOperationException {
         if(messages.stream().anyMatch(mes -> Objects.isNull(mes) || mes.length == 0)) {
             //at least one message is empty
-            throw new SatelliteException(this.errorMessages.getString(MESSAGES_EXCEPTION));
+            throw new QuasarFireOperationException(this.errorMessages.getString(MESSAGES_EXCEPTION));
         }
     }
 
-    private void validateMessagesLength(ArrayList<String[]> messages, int minLength) throws SatelliteException {
+    private void validateMessagesLength(ArrayList<String[]> messages, int minLength) throws QuasarFireOperationException {
         if(!messages.stream().allMatch(msg -> msg.length == minLength || msg.length == minLength+1)) {
-            throw new SatelliteException(this.errorMessages.getString(MESSAGES_EXCEPTION));
+            throw new QuasarFireOperationException(this.errorMessages.getString(MESSAGES_EXCEPTION));
         }
     }
 
-    private String appendWord(String decodedMessage, String word) throws SatelliteException {
+    private String appendWord(String decodedMessage, String word) throws QuasarFireOperationException {
         if(Objects.nonNull(word)) {
             return decodedMessage.concat(word + BLANK_SPACE);
         } else {
-            throw new SatelliteException(this.errorMessages.getString(MESSAGES_EXCEPTION));
+            throw new QuasarFireOperationException(this.errorMessages.getString(MESSAGES_EXCEPTION));
         }
     }
 
