@@ -3,7 +3,6 @@ package com.mercadolibre.quasar_fire_operation.services.impl;
 import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import com.mercadolibre.quasar_fire_operation.services.MessageDeterminationService;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
@@ -17,7 +16,7 @@ public class MessageDeterminationServiceImpl implements MessageDeterminationServ
     private static final String BLANK_SPACE = " ";
     private static final String EMPTY_STRING = "";
 
-    private ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
+    private final ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
 
     @Override
     public String getMessage(ArrayList<String[]> messages) throws QuasarFireOperationException {

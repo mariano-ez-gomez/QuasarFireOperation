@@ -1,6 +1,6 @@
 package com.mercadolibre.quasar_fire_operation.dto.request;
 
-public class SatelliteSplittedInfoDto {
+public class SatelliteSplitInfoDto {
 
     private float distance;
     private String[] message;

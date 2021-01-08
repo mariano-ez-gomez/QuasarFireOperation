@@ -9,11 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SatelliteInformationServiceImplTest {
 
     public static final String KENOBI = "kenobi";
+    public static final String VADER = "vader";
 
     @Mock
     private Map<String, Center> positionsCentersMap;
@@ -31,12 +33,13 @@ public class SatelliteInformationServiceImplTest {
     @Test
     public void validateSatellitesNames_notFound() {
         ArrayList<String> names = new ArrayList<>();
-        names.add(KENOBI);
+        names.add(VADER);
+        Mockito.when(this.positionsCentersMap.get(Mockito.any())).thenReturn(null);
         Assertions.assertThrows(QuasarFireOperationException.class, () -> this.satelliteInformationService.validateSatellitesNames(names));
     }
 
     @Test
-    public void validateSatellitesNames_found() throws QuasarFireOperationException {
+    public void validateSatellitesNames_found() {
         ArrayList<String> names = new ArrayList<>();
         names.add(KENOBI);
         Mockito.when(this.positionsCentersMap.get(Mockito.anyString())).thenReturn(new Center(0F, 0F));
@@ -46,7 +49,7 @@ public class SatelliteInformationServiceImplTest {
     @Test
     public void getSatellitePositionByName() {
         Mockito.when(this.positionsCentersMap.get(Mockito.anyString())).thenReturn(new Center(0F, 0F));
-        this.satelliteInformationService.getSatellitePositionByName(KENOBI);
+        Assertions.assertNotNull(this.satelliteInformationService.getSatellitePositionByName(KENOBI));
     }
 
     @Test
@@ -55,7 +58,7 @@ public class SatelliteInformationServiceImplTest {
     }
 
     @Test
-    public void validateSatellites_noSatellites() throws QuasarFireOperationException {
+    public void validateSatellites_noSatellites() {
         TopSecretRequestDto topSecretRequestDto = new TopSecretRequestDto();
         Assertions.assertThrows(QuasarFireOperationException.class, () -> this.satelliteInformationService.validateSatellites(topSecretRequestDto));
     }

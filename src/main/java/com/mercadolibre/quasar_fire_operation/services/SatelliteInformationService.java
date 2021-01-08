@@ -9,6 +9,9 @@ import java.util.ArrayList;
 public interface SatelliteInformationService {
 
     public void validateSatellites(TopSecretRequestDto topSecretRequestDto) throws QuasarFireOperationException;
+
     public void validateSatellitesNames(ArrayList<String> names) throws QuasarFireOperationException;
+
     public Center getSatellitePositionByName(String name);
+
 }

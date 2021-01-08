@@ -7,7 +7,6 @@ import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationExce
 import com.mercadolibre.quasar_fire_operation.services.SatelliteInformationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
 import java.util.*;
 
@@ -19,7 +18,7 @@ public class SatelliteInformationServiceImpl implements SatelliteInformationServ
     private static final String SATELLITE_VALIDATION_ERROR = "SATELLITE_VALIDATION_ERROR";
     private Map<String, Center> positionsCentersMap;
 
-    private ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
+    private final ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
 
     @Value("${satellite0.name}")
     private String sat0Name;
@@ -42,7 +41,8 @@ public class SatelliteInformationServiceImpl implements SatelliteInformationServ
     private float sat2PositionY;
 
     @PostConstruct
-    private void buildSatellitesCentersMap(){
+    private void buildSatellitesCentersMap() {
+        //getting satellites names and positions
         positionsCentersMap = new HashMap<>();
         positionsCentersMap.put(sat0Name, new Center(sat0PositionX, sat0PositionY));
         positionsCentersMap.put(sat1Name, new Center(sat1PositionX, sat1PositionY));
@@ -51,14 +51,15 @@ public class SatelliteInformationServiceImpl implements SatelliteInformationServ
 
     @Override
     public void validateSatellitesNames(ArrayList<String> names) throws QuasarFireOperationException {
-        if(names.stream().anyMatch(name -> Objects.isNull(this.positionsCentersMap.get(name)))) {
+        if(names.stream().anyMatch(name -> Objects.isNull(this.positionsCentersMap) ||
+                Objects.isNull(this.positionsCentersMap.get(name)))) {
             throw new QuasarFireOperationException(this.errorMessages.getString(SATELLITE_NAME_ERROR));
         }
     }
 
     @Override
     public Center getSatellitePositionByName(String name) {
-        return this.positionsCentersMap.get(name);
+        return Objects.nonNull(this.positionsCentersMap) ? this.positionsCentersMap.get(name) : null;
     }
 
     @Override
@@ -72,6 +73,9 @@ public class SatelliteInformationServiceImpl implements SatelliteInformationServ
     }
 
     private boolean validateSatellitesInfo(ArrayList<SatelliteInfoDto> satellites) {
-        return satellites.stream().anyMatch(sat -> Objects.isNull(sat.getName()) || Objects.isNull(sat.getDistance()) || Objects.isNull(sat.getMessage()));
+        return satellites.stream().anyMatch(sat -> Objects.isNull(sat.getName()) ||
+                Objects.isNull(sat.getDistance()) ||
+                Objects.isNull(sat.getMessage()) ||
+                Arrays.stream(sat.getMessage()).anyMatch(mes -> Objects.isNull(mes)));
     }
 }

@@ -7,4 +7,5 @@ import java.util.ArrayList;
 public interface MessageDeterminationService {
 
     public String getMessage(ArrayList<String []> messages) throws QuasarFireOperationException;
+
 }

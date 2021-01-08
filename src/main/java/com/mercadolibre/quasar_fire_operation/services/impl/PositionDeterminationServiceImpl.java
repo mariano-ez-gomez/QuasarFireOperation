@@ -6,7 +6,6 @@ import com.mercadolibre.quasar_fire_operation.dto.response.PositionDto;
 import com.mercadolibre.quasar_fire_operation.exceptions.QuasarFireOperationException;
 import com.mercadolibre.quasar_fire_operation.services.PositionDeterminationService;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -21,7 +20,7 @@ public class PositionDeterminationServiceImpl implements PositionDeterminationSe
     private static final String SHIP_ON_SAME_POSITION = "SHIP_ON_SAME_POSITION";
     private static final String NO_INTERSECTION = "NO_INTERSECTION";
 
-    private ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
+    private final ResourceBundle errorMessages = ResourceBundle.getBundle("errormessages");
     final Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Override

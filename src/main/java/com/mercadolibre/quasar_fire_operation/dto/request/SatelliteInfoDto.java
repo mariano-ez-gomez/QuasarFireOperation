@@ -1,6 +1,6 @@
 package com.mercadolibre.quasar_fire_operation.dto.request;
 
-public class SatelliteInfoDto extends SatelliteSplittedInfoDto{
+public class SatelliteInfoDto extends SatelliteSplitInfoDto {
 
     private String name;
 
